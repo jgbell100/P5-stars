@@ -8,6 +8,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 
   background("black");
+  angleMode(DEGREES);
 
   for (i = 0; i < MAX_PARTICLES; i += 1){
     particles.push(new Particle());
@@ -41,9 +42,10 @@ function draw() {
   this.y = random(windowHeight);
   this.particle_range = 100;
   this.expanding = random([true, false]);
-  this.MAX_DIAMETER = 25;
-  this.MIN_DIAMETER = 5;
+  this.MAX_DIAMETER = 30;
+  this.MIN_DIAMETER = 20;
   this.diameter = random(this.MIN_DIAMETER, this.MAX_DIAMETER);
+  this.rotation = random(-5, 5);
   this.pulse_rate = random([0.25, 0.5, 1, 1, 1.5, 2, 2.5]);
 
 
@@ -99,8 +101,15 @@ function draw() {
     if (this.diameter >= this.MAX_DIAMETER || this.diameter <= this.MIN_DIAMETER) {
       this.expanding = !(this.expanding);
     } 
-
-    ellipse(this.position.x, this.position.y, this.diameter, this.diameter);
+    push();
+    translate(this.position.x, this.position.y);
+    ellipseMode(CENTER);
+    rotate(this.rotation);
+    ellipse(0, 0, this.diameter, this.diameter / 3);
+    ellipse(0, 0, this.diameter / 3, this.diameter);
+    this.rotation += 10;
+    this.r
+    pop();
   };
 
   this.show = function(){
