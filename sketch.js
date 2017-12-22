@@ -23,11 +23,19 @@ function draw() {
         if (particles[i].withinRange(particles[j])){
           particles[i].link(particles[j]);
           particles[i].changeDirection();
-          var repel_force = particles[i].repel(particles[j]);
+          let repel_force = particles[i].repel(particles[j]);
           particles[i].applyForce(repel_force);
         }
       }
     }
+
+    // particles respond to the position of the mouse
+    //only respond if the mouse if within the canvas
+    if (mouseX > 0 && mouseX < windowWidth && mouseY > 0 && mouseY < windowHeight){
+      let mouse_force = particles[i].repelMouse();
+      particles[i].applyForce(mouse_force);
+    }
+
     particles[i].move();
     particles[i].show();
   }
@@ -91,6 +99,19 @@ function draw() {
     var force = p5.Vector.sub(this.position,other.position);
     var distance = force.mag();
     distance = constrain(distance,5.0,25.0);
+    force.normalize();
+ 
+    var strength = (g * this.diameter) / (distance * distance);
+
+    force.mult(strength);
+    return force;
+  };
+
+  this.repelMouse = function(){
+    var ms = createVector(mouseX, mouseY);
+    var g = 1000;
+    var force = p5.Vector.sub(this.position,ms);
+    var distance = force.mag();
     force.normalize();
  
     var strength = (g * this.diameter) / (distance * distance);
