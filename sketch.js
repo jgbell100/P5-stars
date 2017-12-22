@@ -20,8 +20,9 @@ function draw() {
   for (i = 0; i < particles.length ; i += 1){
     for (j = i; j < particles.length; j += 1){
       if (particles[i] != particles[j]){
-        if (particles[i].within_range(particles[j])){
+        if (particles[i].withinRange(particles[j])){
           particles[i].link(particles[j]);
+          particles[i].changeDirection();
           var repel_force = particles[i].repel(particles[j]);
           particles[i].applyForce(repel_force);
         }
@@ -46,6 +47,7 @@ function draw() {
   this.MIN_DIAMETER = 20;
   this.diameter = random(this.MIN_DIAMETER, this.MAX_DIAMETER);
   this.rotation = random(-5, 5);
+  this.rotation_rate = random([-20, -10,-7, -5, -1, 1, 5, 7, 10, 20]);
   this.pulse_rate = random([0.25, 0.5, 1, 1, 1.5, 2, 2.5]);
 
 
@@ -55,8 +57,12 @@ function draw() {
   };
 
   // is the particle within range of another (specific) particle?
-  this.within_range = function(other){
+  this.withinRange = function(other){
     return (int(this.position.dist(other.position)) <= this.particle_range);
+  };
+
+  this.changeDirection = function(){
+    this.rotation_rate = -this.rotation_rate;
   };
 
   this.link = function(other){
@@ -107,8 +113,7 @@ function draw() {
     rotate(this.rotation);
     ellipse(0, 0, this.diameter, this.diameter / 3);
     ellipse(0, 0, this.diameter / 3, this.diameter);
-    this.rotation += 10;
-    this.r
+    this.rotation += this.rotation_rate;
     pop();
   };
 
