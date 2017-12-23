@@ -14,6 +14,8 @@
   this.rotation = random(-5, 5);
   this.rotation_rate = random([-20, -10,-7, -5, -1, 1, 5, 7, 10, 20]);
   this.pulse_rate = random([0.25, 0.5, 1, 1, 1.5, 2, 2.5]);
+  this.history = [];
+  this.length = 20;
 
 
   this.applyForce = function(force){
@@ -105,15 +107,38 @@
 
   this.show = function(){
     // the colour of the particle depends on its horizontal position on the screen 
-  	let colour = map(this.position.x, 0, windowWidth, 0, 255);
+  	let colour = this.getColour();
   
     fill (colour, colour, 256 - colour, 180);
   
     noStroke();
     this.pulse();
+    this.showTrail();
+  };
+
+  this.getColour = function(){
+    return (map(this.position.x, 0, windowWidth, 0, 255));
+  };
+
+  this.showTrail = function(){
+    
+    let colour = this.getColour();
+    let alpha = 10;
+    for (let pos of this.history){
+
+      fill (colour, colour, 256 - colour, alpha);
+      alpha += 3;
+      ellipse(pos.x, pos.y, 10, 10); 
+    }
   };
 
   this.move = function(){
+    var p = this.position.copy();
+    this.history.push(p);
+    if (this.history.length > this.length){
+      this.history.splice(0,1);
+    }
+  
     // particles 'wrap' around the screen
     if (this.position.x < 0){
       this.position.x = windowWidth;
